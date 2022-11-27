@@ -1,0 +1,28 @@
+Convolution:
+ Convolution is a *. We have kernel, for example 3, step on default=1, and 6x6
+ picture. Our kernel design define a vertical edge detection because of its 
+ values.
+               |--> Convolution
+ 3 0 1 2 7 4   |
+ 1 5 8 9 3 1   |   1 0 -1       -5-4 0 8
+ 2 7 2 5 1 3   *   1 0 -1   => -10-2 2 3
+ 0 1 3 1 7 8       1 0 -1        0-2-4-7
+ 4 2 1 6 2 8       kernel       -3-2-3-16
+ 2 4 5 2 3 9       step=1
+
+
+
+Max pooling:
+ for examplpe 5x5 square of values. We have hyperparameters (not trainable)
+ f=3 (filtersize) and s=1 (stride) and maybe p (padding) but ussualy dont use
+
+ 1 2 5 9 3                  we look at 3x3 (cuz f=3) square and take max value
+ 4 2 6 4 2        6 9 9     of it and we put this value to our new 3x3 square
+ 0 3 4 2 7   =>   6 7 7     and then we step 1 stride to right, put max value
+ 4 2 2 7 1        9 7 7     to our 3x3 square and we do this to have 3x3 square
+ 9 2 3 3 6                  with max values from 5x5 square. 
+
+Average pooling:
+ same example, f=3 and s=1. But this time we dont take max value from 3x3 square 
+ in our 5x5 square, we take average value and put it inside of our 3x3 square.
+
