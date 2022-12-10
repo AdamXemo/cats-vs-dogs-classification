@@ -6,19 +6,9 @@ import random
 import pickle
 
 
-DATADIR = 'cats_dogs_classification/kagglecatsanddogs_5340/PetImages'
+DATADIR = 'kagglecatsanddogs_5340/PetImages'
 CATEGORIES = ['Dog', 'Cat']
-
-for category in CATEGORIES:
-    path = os.path.join(DATADIR, category)
-    for img in os.listdir(path):
-        img_array = cv2.imread(os.path.join(path,img), cv2.IMREAD_GRAYSCALE)
-
 IMG_SIZE = 50
-
-new_array = cv2.resize(img_array, (IMG_SIZE, IMG_SIZE))
-plt.imshow(new_array, cmap='gray')
-plt.show()
 
 training_data = []
 
@@ -70,7 +60,3 @@ pickle_out.close()
 
 pickle_in = open('X.pickle', 'rb')
 X = pickle.load(pickle_in)
-
-for i in range(10):
-    plt.imshow(img_array[i])
-    plt.show

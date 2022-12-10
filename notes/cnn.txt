@@ -10,19 +10,88 @@ Convolution:
  4 2 1 6 2 8       kernel       -3-2-3-16
  2 4 5 2 3 9       step=1
 
+ This is vertical edge ^ detection kernel
+ This is horizontal edge detection kernel:
+ 
+ 1 1 1             sobel           1 0-1
+ 0 0 0            (vertical)       2 0-2
+-1-1-1             kernel          1 0-1
+                                here ^ 
+ Numbers are changable, for example 3 10 3
+ Also you can learn this 9 parameters.
 
+Size of our input and output:
+
+ n*n    k*k   n-k+1 * n-k+1
+  ^      ^          ^
+ inpt  kernel     output
+
+ Strided convolution: convolution but with bigger stride(step) for exmpl: s=2
+
+   n*n    *    k*k    =>     /  n+2p-k     \     /  n+2p-k     \        
+padding=p    stride=s    =>  |  ------ + 1 |  x  |  ------ + 1 |
+  (p=0)       (s=2)          \    s        /     \    s        /
+
+ Technical note on cross-corelation vs. convolution. Convolution in math textbook:
+
+               3 4 5
+ 6x6 input  *  1 0 2     =>   4x4 output
+              -1 9 7 -|
+                      |
+ befor we used 7 2 5  |
+ a cross core- 9 0 4 -| We use this flipped matix
+ lation, not *-1 1 3    to calculate output.
+
+ RGB convolution. It's a little hard to write 3D stuff in notebook, so i ll 
+ try to do it by text:
+ 
+ 6x6x3 * 3x3x3 => 4x4   why?
+
+ We apply our 3x3x3 kernel for each (R, G, B) image, we multiply values 9 
+ times for each image (27 times) and add them all (27 times) and we get 1 
+ output value for our 4x4 output
+ We (can) have different kernels for each color matrix (R,G,B), for example:
+
+ R-vertical edges detection, G-0s, B-0s (Red vertical edges detection kernel)
+ or    (VED - vertical edges detection)
+ R-VED, G-VED, B-VED (regular VED).
+
+ With different kernel values we can get detect different features
+
+
+ What if we want use multiple filter at the same time (VED, HED etc.)?
+ We can use multiple filters to apply in our image and get multiple outputs
+ And by stacking it together we, for example, can get 4x4x2 output.
+
+ Summary: n*n*nc  *  k*k*nc  =  n-f+1*n-f+1*nk (number of kernels)
+
+
+Padding:
+ pixels on the edge of image are impacted by kernel only once when pixels in
+ the center are impacted for example 9 times, and we need to solve this two 
+ problems. We dont want image to strinkt and dont want to throw information
+ from edges. So to fix that we convert for example 6x6 to 8x8 and we get
+ output of not 4x4 image but 6x6 image. We padding it with 0s and p=padding
+ amount, for example 1. Our output = n+2p-k+1*n+2p-k+1. Now we dont throw
+ the information from the edge, we just count a bit less.
+
+ Valid: n*n *(convolution) k*k => n-k+1*n-k+1
+ Same: Padding so that output size is the same as input size
+
+ n+2p-k+1 = n; 2p-k+1 = 0; p = (k-1)/2 => formula for p for same output.
+                           -----------                      ----
 
 Max pooling:
  for examplpe 5x5 square of values. We have hyperparameters (not trainable)
- f=3 (filtersize) and s=1 (stride) and maybe p (padding) but ussualy dont use
+ k=3 (kernel) and s=1 (stride) and maybe p (padding) but ussualy dont use
 
- 1 2 5 9 3                  we look at 3x3 (cuz f=3) square and take max value
+ 1 2 5 9 3                  we look at 3x3 (cuz k=3) square and take max value
  4 2 6 4 2        6 9 9     of it and we put this value to our new 3x3 square
  0 3 4 2 7   =>   6 7 7     and then we step 1 stride to right, put max value
  4 2 2 7 1        9 7 7     to our 3x3 square and we do this to have 3x3 square
  9 2 3 3 6                  with max values from 5x5 square. 
 
 Average pooling:
- same example, f=3 and s=1. But this time we dont take max value from 3x3 square 
+ same example, k=3 and s=1. But this time we dont take max value from 3x3 square 
  in our 5x5 square, we take average value and put it inside of our 3x3 square.
 
